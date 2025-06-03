@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+const cors = require('cors'); // <-- Add CORS
+
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger/swagger.json');
 
@@ -18,6 +20,7 @@ mongoose
     console.error('Fout bij verbinden met MongoDB:', err);
   });
 
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 
 // Routes
