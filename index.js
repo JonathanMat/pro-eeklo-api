@@ -27,11 +27,19 @@ app.use(express.json());
 const headerRoutes = require('./routes/header');
 const loginRoute = require('./routes/login');
 const userRoutes = require('./routes/users');
+const introRoutes = require('./routes/intro');
+const countdownRoutes = require('./routes/countdown');
+const infoRoutes = require('./routes/info');
+const realiserenRoutes = require('./routes/realiseren');
 
 app.use('/api/header', headerRoutes);
 app.use('/api/login', loginRoute);
 app.use('/api/users', userRoutes);
 app.use('/uploads', express.static('uploads'));
+app.use('/api/intro', introRoutes);
+app.use('/api/countdown', countdownRoutes);
+app.use('/api/info', infoRoutes);
+app.use('/api/realiseren', realiserenRoutes);
 
 // Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

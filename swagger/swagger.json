@@ -8,7 +8,12 @@
   "tags": [
     { "name": "auth", "description": "Authenticatie endpoints" },
     { "name": "users", "description": "Beheer van gebruikers" },
-    { "name": "header", "description": "Header content" }
+    { "name": "header", "description": "Header content" },
+    { "name": "intro", "description": "Introductieblok met titel en tekst" },
+    { "name": "countdown", "description": "Instellen en ophalen van afteldatum" },
+    { "name": "info", "description": "Informatieve blokken beheren" },
+    { "name": "realiseren", "description": "Tekstblokken met titel en tekst" }
+
   ],
   "paths": {
     "/api/header": {
@@ -192,7 +197,312 @@
           "403": { "description": "Geen toegang" }
         }
       }
+    },
+    "/api/intro": {
+      "get": {
+        "tags": ["intro"],
+        "summary": "Haalt de intro op",
+        "responses": {
+          "200": {
+            "description": "Intro succesvol opgehaald",
+            "content": {
+              "application/json": {
+                "example": {
+                  "titel": "Welkom bij Pro Eeklo",
+                  "tekst": "Dit is de introductie van onze applicatie."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Intro niet gevonden"
+          }
+        }
+      },
+      "post": {
+        "tags": ["intro"],
+        "summary": "Maakt een nieuwe intro aan (alleen admin/beheer)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "titel": { "type": "string" },
+                  "tekst": { "type": "string" }
+                },
+                "required": ["titel", "tekst"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Intro succesvol aangemaakt"
+          },
+          "400": {
+            "description": "Intro bestaat al of ontbrekende velden"
+          },
+          "403": {
+            "description": "Geen toegang"
+          }
+        }
+      },
+      "put": {
+        "tags": ["intro"],
+        "summary": "Wijzigt de bestaande intro (alleen admin/beheer)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "titel": { "type": "string" },
+                  "tekst": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Intro succesvol aangepast"
+          },
+          "400": {
+            "description": "Ongeldige invoer"
+          },
+          "403": {
+            "description": "Geen toegang"
+          },
+          "404": {
+            "description": "Intro niet gevonden"
+          }
+        }
+      }
+    },
+    "/api/countdown": {
+  "get": {
+    "tags": ["countdown"],
+    "summary": "Haalt de ingestelde einddatum op",
+    "responses": {
+      "200": {
+        "description": "Afteldatum succesvol opgehaald",
+        "content": {
+          "application/json": {
+            "example": {
+              "endDate": "2025-10-13T06:00:00.000Z",
+              "jaar": 2025,
+              "maand": 9,
+              "dag": 13,
+              "uur": 8,
+              "minuut": 0
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Geen datum ingesteld"
+      }
     }
+  },
+  "post": {
+    "tags": ["countdown"],
+    "summary": "Stelt een nieuwe afteldatum in (alleen admin of beheer)",
+    "security": [{ "bearerAuth": [] }],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "jaar": { "type": "integer", "example": 2025 },
+              "maand": { "type": "integer", "example": 9 },
+              "dag": { "type": "integer", "example": 13 },
+              "uur": { "type": "integer", "example": 8 },
+              "minuut": { "type": "integer", "example": 0 }
+            },
+            "required": ["jaar", "maand", "dag", "uur", "minuut"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": { "description": "Datum ingesteld" },
+      "200": { "description": "Datum bijgewerkt" },
+      "400": { "description": "Ongeldige invoer" },
+      "403": { "description": "Geen toegang" }
+    }
+  }
+},
+"/api/info": {
+  "get": {
+    "tags": ["info"],
+    "summary": "Haalt alle info blocks op",
+    "responses": {
+      "200": {
+        "description": "Lijst met blocks",
+        "content": {
+          "application/json": {
+            "example": [
+              { "titel": "Blok 1", "tekst": "Beschrijving", "image": "uploads/image1.jpg" }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "tags": ["info"],
+    "summary": "Voegt een nieuw info block toe (admin/beheer)",
+    "security": [{ "bearerAuth": [] }],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "titel": { "type": "string" },
+              "tekst": { "type": "string" },
+              "image": { "type": "string", "format": "binary" }
+            },
+            "required": ["titel", "tekst", "image"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": { "description": "Block aangemaakt" },
+      "400": { "description": "Verplichte velden ontbreken" }
+    }
+  }
+},
+"/api/info/{id}": {
+  "put": {
+    "tags": ["info"],
+    "summary": "Wijzigt een info block (admin/beheer)",
+    "security": [{ "bearerAuth": [] }],
+    "parameters": [
+      { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "titel": { "type": "string" },
+              "tekst": { "type": "string" },
+              "image": { "type": "string", "format": "binary" }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "Block bijgewerkt" },
+      "404": { "description": "Niet gevonden" }
+    }
+  },
+  "delete": {
+    "tags": ["info"],
+    "summary": "Verwijdert een info block (admin/beheer)",
+    "security": [{ "bearerAuth": [] }],
+    "parameters": [
+      { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+    ],
+    "responses": {
+      "200": { "description": "Verwijderd" },
+      "404": { "description": "Niet gevonden" }
+    }
+  }
+},
+"/api/realiseren": {
+  "get": {
+    "tags": ["realiseren"],
+    "summary": "Haalt alle realisatie-blokken op",
+    "responses": {
+      "200": {
+        "description": "Lijst van blokken",
+        "content": {
+          "application/json": {
+            "example": [
+              { "_id": "abc123", "titel": "Doel 1", "tekst": "We gaan dit realiseren." }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "tags": ["realiseren"],
+    "summary": "Voegt een nieuw blok toe (alleen admin/beheer)",
+    "security": [{ "bearerAuth": [] }],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "titel": { "type": "string" },
+              "tekst": { "type": "string" }
+            },
+            "required": ["titel", "tekst"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": { "description": "Blok aangemaakt" },
+      "400": { "description": "Verplichte velden ontbreken" },
+      "403": { "description": "Geen toegang" }
+    }
+  }
+},
+"/api/realiseren/{id}": {
+  "put": {
+    "tags": ["realiseren"],
+    "summary": "Wijzigt een blok (alleen admin/beheer)",
+    "security": [{ "bearerAuth": [] }],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" }
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "titel": { "type": "string" },
+              "tekst": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "Blok gewijzigd" },
+      "403": { "description": "Geen toegang" },
+      "404": { "description": "Niet gevonden" }
+    }
+  }
+}
+
+
+
   },
   "components": {
     "securitySchemes": {
