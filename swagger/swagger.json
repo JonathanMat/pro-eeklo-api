@@ -1,0 +1,206 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Mijn API",
+    "version": "1.0.0",
+    "description": "API met header info"
+  },
+  "tags": [
+    { "name": "auth", "description": "Authenticatie endpoints" },
+    { "name": "users", "description": "Beheer van gebruikers" },
+    { "name": "header", "description": "Header content" }
+  ],
+  "paths": {
+    "/api/header": {
+      "get": {
+        "tags": ["header"],
+        "summary": "Haalt de header op",
+        "responses": {
+          "200": {
+            "description": "Succes",
+            "content": {
+              "application/json": {
+                "example": {
+                  "titel": "Welkom",
+                  "tekst": "Dit is een tekst.",
+                  "image": "https://voorbeeld.com/uploads/header.jpg"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["header"],
+        "summary": "Slaat een nieuwe header op (met image upload)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "titel": { "type": "string" },
+                  "tekst": { "type": "string" },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": ["titel", "tekst", "image"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Header opgeslagen" },
+          "400": { "description": "Header bestaat al" },
+          "403": { "description": "Geen toegang" }
+        }
+      },
+      "put": {
+        "tags": ["header"],
+        "summary": "Wijzigt de bestaande header (optionele velden)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "titel": { "type": "string" },
+                  "tekst": { "type": "string" },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Header succesvol aangepast" },
+          "400": { "description": "Ongeldige invoer" },
+          "403": { "description": "Geen toegang" }
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Logt een gebruiker in",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["username", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ingelogd",
+            "content": {
+              "application/json": {
+                "example": {
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5..."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ongeldige login"
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": ["users"],
+        "summary": "Haalt alle gebruikers op (alleen voor beheer)",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Lijst van gebruikers",
+            "content": {
+              "application/json": {
+                "example": [
+                  { "id": 1, "username": "beheer", "role": "beheer" },
+                  { "id": 2, "username": "admin", "role": "admin" }
+                ]
+              }
+            }
+          },
+          "403": { "description": "Geen toegang" }
+        }
+      },
+      "post": {
+        "tags": ["users"],
+        "summary": "Voegt een nieuwe gebruiker toe (alleen voor beheer)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string" },
+                  "password": { "type": "string" },
+                  "role": {
+                    "type": "string",
+                    "enum": ["beheer", "admin", "gebruiker"]
+                  }
+                },
+                "required": ["username", "password", "role"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Gebruiker aangemaakt" },
+          "403": { "description": "Geen toegang" }
+        }
+      }
+    },
+    "/api/users/{username}": {
+      "delete": {
+        "tags": ["users"],
+        "summary": "Verwijdert een gebruiker (alleen voor beheer)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Gebruiker verwijderd" },
+          "404": { "description": "Niet gevonden" },
+          "403": { "description": "Geen toegang" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
