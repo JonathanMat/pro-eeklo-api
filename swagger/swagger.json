@@ -16,6 +16,7 @@
     { "name": "logo", "description": "Logo blok met titel en tekst" },
     { "name": "deelname", "description": "Artikel deelname aan verkiezingen" }
 
+
   ],
   "paths": {
     "/api/header": {
@@ -629,7 +630,214 @@
       "404": { "description": "Niet gevonden" }
     }
   }
+},
+"/api/categorieen": {
+  "get": {
+    "tags": ["categorieen"],
+    "summary": "Haal alle categorieën op",
+    "responses": {
+      "200": {
+        "description": "Succes",
+        "content": {
+          "application/json": {
+            "example": [{ "_id": "abc123", "naam": "Breekpunten", "beschrijving": "Uitleg..." }]
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "tags": ["categorieen"],
+    "summary": "Voeg nieuwe categorie toe",
+    "security": [{ "bearerAuth": [] }],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "naam": { "type": "string" },
+              "beschrijving": { "type": "string" }
+            },
+            "required": ["naam"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": { "description": "Categorie aangemaakt" },
+      "403": { "description": "Geen toegang" }
+    }
+  }
+},
+"/api/punten": {
+  "get": {
+    "tags": ["punten"],
+    "summary": "Haal alle punten op",
+    "responses": {
+      "200": {
+        "description": "Succes",
+        "content": {
+          "application/json": {
+            "example": [
+              {
+                "_id": "xyz123",
+                "categorie": { "_id": "abc123", "naam": "Breekpunten" },
+                "titel": "Sluipwegen aanpakken",
+                "inhoud": "Volledige uitleg...",
+                "afbeelding1": "uploads/file1.jpg",
+                "afbeelding2": "uploads/file2.jpg"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "tags": ["punten"],
+    "summary": "Voeg nieuw punt toe",
+    "security": [{ "bearerAuth": [] }],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "categorie": { "type": "string" },
+              "titel": { "type": "string" },
+              "inhoud": { "type": "string" },
+              "afbeelding1": { "type": "string", "format": "binary" },
+              "afbeelding2": { "type": "string", "format": "binary" }
+            },
+            "required": ["categorie", "titel"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": { "description": "Punt aangemaakt" },
+      "403": { "description": "Geen toegang" }
+    }
+  }
+},
+"/api/categorieen/{id}": {
+  "put": {
+    "tags": ["categorieen"],
+    "summary": "Wijzig een bestaande categorie",
+    "security": [{ "bearerAuth": [] }],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" }
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "naam": { "type": "string" },
+              "beschrijving": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "Categorie bijgewerkt" },
+      "404": { "description": "Niet gevonden" }
+    }
+  }
+},
+"/api/punten/{id}": {
+  "put": {
+    "tags": ["punten"],
+    "summary": "Wijzig een punt (optioneel met afbeeldingen)",
+    "security": [{ "bearerAuth": [] }],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" }
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "categorie": { "type": "string" },
+              "titel": { "type": "string" },
+              "inhoud": { "type": "string" },
+              "afbeelding1": {
+                "type": "string",
+                "format": "binary"
+              },
+              "afbeelding2": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Punt bijgewerkt",
+        "content": {
+          "application/json": {
+            "example": {
+              "message": "Punt succesvol bijgewerkt"
+            }
+          }
+        }
+      },
+      "404": { "description": "Niet gevonden" },
+      "403": { "description": "Geen toegang" }
+    }
+  },
+  "delete": {
+    "tags": ["punten"],
+    "summary": "Verwijder een punt (incl. afbeeldingen)",
+    "security": [{ "bearerAuth": [] }],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Punt en afbeeldingen succesvol verwijderd",
+        "content": {
+          "application/json": {
+            "example": {
+              "message": "Punt en afbeeldingen succesvol verwijderd"
+            }
+          }
+        }
+      },
+      "404": { "description": "Punt niet gevonden" },
+      "403": { "description": "Geen toegang" },
+      "500": { "description": "Interne serverfout" }
+    }
+  }
 }
+
+
 
 
 

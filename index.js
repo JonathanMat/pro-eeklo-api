@@ -33,6 +33,8 @@ const infoRoutes = require('./routes/info');
 const realiserenRoutes = require('./routes/realiseren');
 const logoRoutes = require('./routes/logo');
 const deelnameRoutes = require('./routes/deelname');
+const categorieRoutes = require('./routes/categorieen');
+const puntRoutes = require('./routes/punten');
 
 app.use('/api/header', headerRoutes);
 app.use('/api/login', loginRoute);
@@ -44,6 +46,8 @@ app.use('/api/info', infoRoutes);
 app.use('/api/realiseren', realiserenRoutes);
 app.use('/api/logo', logoRoutes);
 app.use('/api/deelname', deelnameRoutes);
+app.use('/api/categorieen', categorieRoutes);
+app.use('/api/punten', puntRoutes);
 
 // Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
