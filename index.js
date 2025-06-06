@@ -20,7 +20,7 @@ mongoose
     console.error('Fout bij verbinden met MongoDB:', err);
   });
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: 'http://localhost:5174' }));
 app.use(express.json());
 
 // Routes
@@ -31,6 +31,8 @@ const introRoutes = require('./routes/intro');
 const countdownRoutes = require('./routes/countdown');
 const infoRoutes = require('./routes/info');
 const realiserenRoutes = require('./routes/realiseren');
+const logoRoutes = require('./routes/logo');
+const deelnameRoutes = require('./routes/deelname');
 
 app.use('/api/header', headerRoutes);
 app.use('/api/login', loginRoute);
@@ -40,6 +42,8 @@ app.use('/api/intro', introRoutes);
 app.use('/api/countdown', countdownRoutes);
 app.use('/api/info', infoRoutes);
 app.use('/api/realiseren', realiserenRoutes);
+app.use('/api/logo', logoRoutes);
+app.use('/api/deelname', deelnameRoutes);
 
 // Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
