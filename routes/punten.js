@@ -30,6 +30,18 @@ router.post('/', verifyToken(['admin', 'beheer']), upload.fields([{ name: 'afbee
   res.status(201).json(punt);
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    const punt = await Punt.findById(req.params.id).populate('categorie');
+    if (!punt) {
+      return res.status(404).json({ error: 'Punt niet gevonden' });
+    }
+    res.json(punt);
+  } catch (err) {
+    res.status(500).json({ error: 'Interne serverfout' });
+  }
+});
+
 router.put('/:id', verifyToken(['admin', 'beheer']), upload.fields([{ name: 'afbeelding1' }, { name: 'afbeelding2' }]), async (req, res) => {
   const { categorie, titel, inhoud } = req.body;
   const update = { categorie, titel, inhoud };

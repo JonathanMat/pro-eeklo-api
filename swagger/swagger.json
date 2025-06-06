@@ -754,6 +754,24 @@
       "200": { "description": "Categorie bijgewerkt" },
       "404": { "description": "Niet gevonden" }
     }
+  },
+    "delete": {
+    "tags": ["categorieen"],
+    "summary": "Verwijder een categorie",
+    "security": [{ "bearerAuth": [] }],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" }
+      }
+    ],
+    "responses": {
+      "200": { "description": "Categorie verwijderd" },
+      "404": { "description": "Categorie niet gevonden" },
+      "403": { "description": "Geen toegang" }
+    }
   }
 },
 "/api/punten/{id}": {
@@ -833,6 +851,39 @@
       "404": { "description": "Punt niet gevonden" },
       "403": { "description": "Geen toegang" },
       "500": { "description": "Interne serverfout" }
+    }
+  },
+  "get": {
+    "tags": ["punten"],
+    "summary": "Haal één punt op via ID",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Succes",
+        "content": {
+          "application/json": {
+            "example": {
+              "_id": "xyz123",
+              "categorie": {
+                "_id": "abc123",
+                "naam": "Breekpunten"
+              },
+              "titel": "Sluipwegen aanpakken",
+              "inhoud": "Volledige uitleg...",
+              "afbeelding1": "uploads/file1.jpg",
+              "afbeelding2": "uploads/file2.jpg"
+            }
+          }
+        }
+      },
+      "404": { "description": "Punt niet gevonden" }
     }
   }
 }
