@@ -20,7 +20,7 @@ mongoose
     console.error('Fout bij verbinden met MongoDB:', err);
   });
 
-app.use(cors({ origin: 'http://localhost:5174' }));
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 
 // Routes

@@ -22,8 +22,8 @@ router.get('/', async (req, res) => {
 
 router.post('/', verifyToken(['admin', 'beheer']), upload.fields([{ name: 'afbeelding1' }, { name: 'afbeelding2' }]), async (req, res) => {
   const { categorie, titel, inhoud } = req.body;
-  const afbeelding1 = req.files['afbeelding1']?.[0]?.path;
-  const afbeelding2 = req.files['afbeelding2']?.[0]?.path;
+  const afbeelding1 = req.files && req.files.afbeelding1 ? req.files.afbeelding1[0].filename : null;
+  const afbeelding2 = req.files && req.files.afbeelding2 ? req.files.afbeelding2[0].filename : null;
 
   const punt = new Punt({ categorie, titel, inhoud, afbeelding1, afbeelding2 });
   await punt.save();
