@@ -14,8 +14,8 @@
     { "name": "info", "description": "Informatieve blokken beheren" },
     { "name": "realiseren", "description": "Tekstblokken met titel en tekst" },
     { "name": "logo", "description": "Logo blok met titel en tekst" },
-    { "name": "deelname", "description": "Artikel deelname aan verkiezingen" }
-
+    { "name": "deelname", "description": "Artikel deelname aan verkiezingen" },
+    { "name": "team", "description": "Overzicht en detail van teamleden" }
 
   ],
   "paths": {
@@ -886,9 +886,146 @@
       "404": { "description": "Punt niet gevonden" }
     }
   }
+},
+"/api/team": {
+  "get": {
+    "tags": ["team"],
+    "summary": "Haal alle teamleden op",
+    "responses": {
+      "200": {
+        "description": "Lijst van teamleden",
+        "content": {
+          "application/json": {
+            "example": [
+              {
+                "_id": "abc123",
+                "nummer": 1,
+                "naam": "Dirk Bafort",
+                "leeftijd": "55 jaar",
+                "functie": "huisarts en gewezen provincieraadslid",
+                "inhoud": "Gedreven huisarts met passie voor Eeklo.",
+                "image": "uploads/dirk.jpg"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "tags": ["team"],
+    "summary": "Voeg een nieuw teamlid toe",
+    "security": [{ "bearerAuth": [] }],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "nummer": { "type": "integer" },
+              "naam": { "type": "string" },
+              "leeftijd": { "type": "string" },
+              "functie": { "type": "string" },
+              "inhoud": { "type": "string" },
+              "image": { "type": "string", "format": "binary" }
+            },
+            "required": ["nummer", "naam"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": { "description": "Teamlid aangemaakt" },
+      "403": { "description": "Geen toegang" }
+    }
+  }
+},
+"/api/team/{id}": {
+  "get": {
+    "tags": ["team"],
+    "summary": "Haal detail op van een teamlid",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Teamlid gevonden",
+        "content": {
+          "application/json": {
+            "example": {
+              "_id": "abc123",
+              "nummer": 1,
+              "naam": "Dirk Bafort",
+              "leeftijd": "55 jaar",
+              "functie": "huisarts en gewezen provincieraadslid",
+              "inhoud": "Gedreven huisarts met passie voor Eeklo.",
+              "image": "uploads/dirk.jpg"
+            }
+          }
+        }
+      },
+      "404": { "description": "Niet gevonden" }
+    }
+  },
+  "put": {
+    "tags": ["team"],
+    "summary": "Wijzig een teamlid",
+    "security": [{ "bearerAuth": [] }],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" }
+      }
+    ],
+    "requestBody": {
+      "required": false,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "nummer": { "type": "integer" },
+              "naam": { "type": "string" },
+              "leeftijd": { "type": "string" },
+              "functie": { "type": "string" },
+              "inhoud": { "type": "string" },
+              "image": { "type": "string", "format": "binary" }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "Teamlid bijgewerkt" },
+      "404": { "description": "Niet gevonden" }
+    }
+  },
+  "delete": {
+    "tags": ["team"],
+    "summary": "Verwijder een teamlid",
+    "security": [{ "bearerAuth": [] }],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" }
+      }
+    ],
+    "responses": {
+      "200": { "description": "Teamlid verwijderd" },
+      "404": { "description": "Niet gevonden" }
+    }
+  }
 }
-
-
 
 
 
